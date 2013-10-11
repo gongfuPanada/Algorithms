@@ -18,5 +18,9 @@ target
 .project
 .settings
 
+#Idea
+.idea
+*.iml
+
 # CodeReview #
 upload.py
