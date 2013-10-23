@@ -6,33 +6,28 @@ import java.util.HashMap;
 
 class TriominoUtil {
 
-    private static HashMap<Integer, Long> f = new HashMap<Integer, Long>();
-    private static HashMap<Integer, Long> g = new HashMap<Integer, Long>();
-    static{
-        f.put(1,0L);
-        f.put(2,0L);
-        f.put(3,3L);
-        f.put(4,0L);
-        f.put(5,0L);
-        f.put(6,11L);
-    }
     public static int count(int n){
-        return (int)(f(n) % 1000000);
+        return (int)f4(n);
     }
 
-    private static long f2(int n){
-        int k = n/3;
-        BigDecimal a = new BigDecimal(2+Math.sqrt(3));
-        a = a.pow(k);
-        BigDecimal b = new BigDecimal(2-Math.sqrt(3));
-        b = b.pow(k);
-        BigDecimal c = new BigDecimal(1./Math.sqrt(3));
-        BigDecimal res = a.add(b).add(c.multiply(a.subtract(b))).divide(new BigDecimal(2));
-       return (long)res.doubleValue();
-    }
-
-    private static long f(int n){
-        if(n % 3 != 0){
+    /**
+     * If n%3 != 0 f(n) = 0
+     *
+     * f(n)=2g(n-1)+f(n-3)
+     * g(n)=f(n-2)+g(n-3)
+     *
+     * f(n)=4f(n-3)-f(n-6)
+     *
+     * Q = {{0, -1}, {1, 4}}
+     *
+     * {f(n-6),f(n-3)}*Q={f(n-3),f(n)}
+     *
+     * {f(3),f(6)}*Q={f(6),f(9)}
+     *
+     * {f(3),f(6)}*Q^(n/3-2)={f(n-3),f(n)}
+     */
+    private static long f4(int n){
+        if(n % 3 != 0) {
             return 0;
         }
         if(n == 3){
@@ -41,16 +36,43 @@ class TriominoUtil {
         if(n == 6){
             return 11;
         }
-        long fnMinus6 = 3;
-        long fnMinus3 = 11;
-        long fnCurrent = 0;
-        for(long i = 9; i <= n; i+=3){
-            long tempfn = fnCurrent;
-            fnCurrent = 4 * fnMinus3 - fnMinus6;
-            fnMinus6 = fnMinus3;
-            fnMinus3 = tempfn;
+        int k = n/3;
+        long[][] mat = {{0,-1},{1,4}};
+
+        mat = power(mat, k-2);
+
+        return multiply(3,11,mat);
+    }
+
+    private static long[][] multiply(long[][] a, long[][] b){
+        long[][] res = {{0,0},{0,0}};
+        for (int i=0; i<2; ++i)
+            for (int j=0; j<2; ++j){
+                for (int k=0; k<2; ++k){
+                    long mul = (a[i][k] * b[k][j])% 1000000;
+                    if(mul < 0){
+                        mul = 1000000 + mul;
+                    }
+                    res[i][j] = (res[i][j] + mul) % 1000000;
+                }
+            }
+        return res;
+    }
+
+    private static long[][] power(long[][]x, int n){
+        if(n == 1){
+            return x;
         }
-        return fnCurrent;
+        if(n % 2 == 0){
+            x = power(x, n/2);
+            return multiply(x,x);
+        } else {
+            long[][] a = power(x, (n-1)/2);
+            return multiply(multiply(a,a),x);
+        }
+    }
+    private static int multiply(int a, int b, long[][] mat){
+        return (int)(((a*mat[0][1]) % 1000000)+((b*mat[1][1]) % 1000000)) % 1000000;
     }
 
 }
