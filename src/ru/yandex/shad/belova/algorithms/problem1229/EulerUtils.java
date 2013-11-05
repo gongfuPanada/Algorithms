@@ -1,5 +1,7 @@
 package ru.yandex.shad.belova.algorithms.problem1229;
 
+import java.util.Arrays;
+
 /**
  * Class for input/output e-olimp data processing
  *
@@ -11,6 +13,9 @@ package ru.yandex.shad.belova.algorithms.problem1229;
 class EulerUtils {
 
     private EulerUtils(){}
+    private static long[] phi = EulerSieve(4000001);
+    private static long[] exGCD = new long[4000001];
+    private static boolean flag = false;
 
     /**
      * Calculates all value of Euler function in range (1, n)
@@ -52,18 +57,23 @@ class EulerUtils {
     public static long ExtremeGCD(int n){
         if(n < 2)
             throw new IllegalArgumentException("n must be equals or greater than 2");
-        long g = 0;
-        long[] phi = EulerSieve(n);
-        for(int i = (int)Math.floor(Math.sqrt(n)) ; i >= 1; i--){
-            for(int j = i * i, k = i; j < n + 1; j += i, k++){
-                if (i == 1 || i == k){
-                    g = g + i * phi[k];
-                } else {
-                        g = g + i * phi[k] + k * phi[i];
+        if (!flag){
+            int v = 4000000;
+            for(int i = 1 ; i <= (int)Math.floor(Math.sqrt(v)); i++){
+                for(int j = i * i, k = i; j < v + 1; j += i, k++){
+                    if(i == k || i == 1){
+                        exGCD[j] = exGCD[j] + i * phi[k];
+                    } else {
+                        exGCD[j] = exGCD[j] + i * phi[k] + k * phi[i];
+                    }
                 }
             }
+            for (int i = 2; i < exGCD.length - 1 ; i++){
+                exGCD[i+1] += exGCD[i];
+            }
+            flag = true;
         }
-        g = g - 1;
-        return g;
+
+        return exGCD[n];
     }
 }

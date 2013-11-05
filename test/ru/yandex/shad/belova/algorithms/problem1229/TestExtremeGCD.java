@@ -24,7 +24,7 @@ public class TestExtremeGCD {
 	 @Parameters
 	 public static Collection<Object[]> data() {
 	    List<Object[]> expectedTestData = new LinkedList<Object[]>();
-       
+
         expectedTestData.add(new Object[]{2, 1});
         expectedTestData.add(new Object[]{3, 3});
         expectedTestData.add(new Object[]{4, 7});
@@ -35,6 +35,7 @@ public class TestExtremeGCD {
         expectedTestData.add(new Object[]{10, 67});
         expectedTestData.add(new Object[]{100, 13015});
         expectedTestData.add(new Object[]{200000, 143295493160L});
+
         return expectedTestData;
 	 }
 	 
