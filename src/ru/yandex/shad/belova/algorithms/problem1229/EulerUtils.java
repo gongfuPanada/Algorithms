@@ -1,7 +1,5 @@
 package ru.yandex.shad.belova.algorithms.problem1229;
 
-import java.util.Arrays;
-
 /**
  * Class for input/output e-olimp data processing
  *
@@ -13,8 +11,8 @@ import java.util.Arrays;
 class EulerUtils {
 
     private EulerUtils(){}
-    private static long[] phi = EulerSieve(4000001);
-    private static long[] exGCD = new long[4000001];
+    private static int[] phi;
+    private static long[] exGCD;
     private static boolean flag = false;
 
     /**
@@ -24,11 +22,11 @@ class EulerUtils {
      * @return array with length = n filled by phi(n)
      * @throws IllegalArgumentException if n <= 0
      */
-    public static long[] EulerSieve(int n){
+    public static int[] EulerSieve(int n){
         if (n <= 0)
             throw new IllegalArgumentException("Negative integers are not allowed");
 
-        long[] phi = new long[n+1];
+        int[] phi = new int[n+1];
 
         phi[0] = 0;
         phi[1] = 1;
@@ -58,6 +56,8 @@ class EulerUtils {
         if(n < 2)
             throw new IllegalArgumentException("n must be equals or greater than 2");
         if (!flag){
+            phi = EulerSieve(4000001);
+            exGCD = new long[4000001];
             int v = 4000000;
             for(int i = 1 ; i <= (int)Math.floor(Math.sqrt(v)); i++){
                 for(int j = i * i, k = i; j < v + 1; j += i, k++){
