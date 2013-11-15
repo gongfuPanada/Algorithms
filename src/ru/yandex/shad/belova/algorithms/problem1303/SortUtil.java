@@ -13,60 +13,62 @@ class SortUtil {
 
     /**
      * Calculates inversions inside merge step
-     * @param a input array
-     * @param l left part start index
-     * @param point separator index
-     * @param r right part end index
+     * @param array input array
+     * @param leftBound left part start index
+     * @param middlePoint separator index
+     * @param rightBound right part end index
      * @return number of inversions on merge step
      */
-	private static long mergeWithInversions (int[] a, int l, int point, int r) {
-		int[] leftCopy = new int[point - l + 1];
+	private static long mergeWithInversions (int[] array, int leftBound, int middlePoint, int rightBound) {
+
+        int leftArrayLength = middlePoint - leftBound + 1;
+        int[] leftCopy = new int[leftArrayLength];
 		long inversions = 0;
-		System.arraycopy(a, l, leftCopy, 0, point-l+1);
+		System.arraycopy(array, leftBound, leftCopy, 0, leftArrayLength);
 		
-		int i = 0;
-		int j = point+1;
-		int k = l;
+		int leftArrayPosition = 0;
+		int rightArrayPosition = middlePoint+1;
+		int targetArrayPosition = leftBound;
 		
-		while ( i < point - l + 1 && j < r + 1){
-			if(leftCopy[i] <= a[j]) {
-				a[k++] = leftCopy[i++];
+		while ( leftArrayPosition < middlePoint - leftBound + 1 && rightArrayPosition < rightBound + 1){
+			if(leftCopy[leftArrayPosition] <= array[rightArrayPosition]) {
+				array[targetArrayPosition++] = leftCopy[leftArrayPosition++];
 			} else {
-				inversions += point - l + 1 - i;
-				a[k++] = a[j++];
+				inversions += middlePoint - leftBound + 1 - leftArrayPosition;
+				array[targetArrayPosition++] = array[rightArrayPosition++];
 			}
 		}
 		
-		while ( i < point - l + 1){
-			a[k++] = leftCopy[i++];
+		while ( leftArrayPosition < middlePoint - leftBound + 1){
+			array[targetArrayPosition++] = leftCopy[leftArrayPosition++];
 		}
 		return inversions;
 	}
 
     /**
      * Recursive calculation of number of inversions
-     * @param a input array
-     * @param l left index
-     * @param r right index
+     * @param array input array
+     * @param leftBound left index
+     * @param rightBound right index
      * @return number of inversions
      */
-    private static long getInversions (int[] a, int l, int r) {
-        int point = (l+r)/2;
+    private static long getInversions (int[] array, int leftBound, int rightBound) {
+        int pivot = (leftBound+rightBound)/2;
         long inversions = 0;
-        if(l < r) {
-            inversions = inversions + getInversions(a, l, point);
-            inversions = inversions + getInversions(a, point+1, r);
+        if(leftBound < rightBound) {
+            inversions = inversions + getInversions(array, leftBound, pivot);
+            inversions = inversions + getInversions(array, pivot+1, rightBound);
         }
-        return inversions + mergeWithInversions(a, l, point, r);
+        return inversions + mergeWithInversions(array, leftBound, pivot, rightBound);
     }
 
     /**
      * Method of calculating inversions number in whole array
-     * @param a input array
+     * @param array input array
      * @return number of inversions in a whole array
      */
-	public static long getInversions (int[] a) {
-		return getInversions(a, 0, a.length - 1);
+	public static long getInversions (int[] array) {
+		return getInversions(array, 0, array.length - 1);
 	}
 
 }
