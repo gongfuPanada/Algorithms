@@ -64,7 +64,7 @@ public class Main {
             }
             out.flush();
         } catch (IOException e) {
-            System.err.println("Bad data input");
+            System.err.println("Bad data input: " + e.getMessage());
         } finally {
             if(cursor != null){
                 try{
